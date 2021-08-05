@@ -1,6 +1,9 @@
 import Ajv from 'ajv';
-import fastifyEnv from 'fastify-env';
-import { envSchema } from './options.js';
+import { Server } from 'socket.io';
+import { createAdapter } from '@socket.io/redis-adapter';
+import { RedisClient } from 'redis';
+import webSocket from './socket.js';
+import { REDIS } from '../../config/env.js';
 
 export const registerSchema = (fastify, schemas) => {
   schemas.forEach((schema) => fastify.addSchema(schema));
@@ -19,11 +22,19 @@ export const initAjvValidator = (fastify) => {
   }) => ajv.compile(schema));
 };
 
-export const initEnv = (fastify) => fastify.register(fastifyEnv, {
-  confKey: 'config',
-  schema: envSchema,
-  dotenv: {
-    path: '.env',
-    debugger: true,
-  },
-});
+export const initSockets = (server) => {
+  const io = new Server(server, {
+    cors: {
+      methods: ['GET', 'POST'],
+      credentials: false,
+    },
+    transports: [
+      'websocket',
+    ],
+  });
+  const pubClient = new RedisClient({ host: REDIS.HOST, port: REDIS.PORT });
+  const subClient = pubClient.duplicate();
+
+  io.adapter(createAdapter(pubClient, subClient));
+  io.on('connection', (req) => webSocket(req, io));
+};

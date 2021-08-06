@@ -1,25 +1,18 @@
-import Ajv from 'ajv';
 import { Server } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { RedisClient } from 'redis';
 import webSocket from './socket.js';
 import { REDIS } from '../../config/env.js';
+import initAjvValidator from '../plugins/ajv.js';
+import initSwagger from '../plugins/swagger.js';
 
 export const registerSchema = (fastify, schemas) => {
   schemas.forEach((schema) => fastify.addSchema(schema));
 };
 
-export const initAjvValidator = (fastify) => {
-  const ajv = new Ajv({
-    removeAdditional: true,
-    useDefaults: true,
-    coerceTypes: true,
-    nullable: true,
-  });
-
-  return fastify.setValidatorCompiler(({
-    schema,
-  }) => ajv.compile(schema));
+export const registerPlugins = async (fastify) => {
+  await initAjvValidator(fastify);
+  await initSwagger(fastify);
 };
 
 export const initSockets = (server) => {

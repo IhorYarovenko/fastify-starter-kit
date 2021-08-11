@@ -1,4 +1,4 @@
-const registerSchema = {
+export const body = {
   $id: 'registerBodySchema',
   type: 'object',
   properties: {
@@ -9,5 +9,3 @@ const registerSchema = {
   required: ['email', 'password', 'firstName'],
   additionalProperties: false,
 };
-
-export default registerSchema;

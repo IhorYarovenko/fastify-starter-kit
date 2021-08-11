@@ -1,10 +1,10 @@
-import loginBodySchema from './validators/login.validator.js';
-import registerBodySchema from './validators/register.validator.js';
+import * as loginSchema from '../../schemas/auth/Login.schema.js';
+import * as registerSchema from '../../schemas/auth/Register.schema.js';
+import { addSchema } from '../../utils/plugins.js';
 import { login, register } from './handler.js';
-import { registerSchema } from '../../utils/plugins.js';
 
 export default async function userController(fastify) {
-  await registerSchema(fastify, [loginBodySchema, registerBodySchema]);
+  await addSchema(fastify, [loginSchema.body, registerSchema.body]);
 
   fastify.route({
     method: 'POST',

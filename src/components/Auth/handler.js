@@ -1,9 +1,15 @@
-export const login = (req, reply) => {
-  console.log(req.body);
-  reply.send({ route: 'login' });
+import User from '../User/user.repository.js';
+
+export const login = async (req, reply) => {
+  User.find({})
+    .then((result) => {
+      reply.send({ result });
+    })
+    .catch((e) => {
+      reply.send({ message: e });
+    });
 };
 
 export const register = (req, reply) => {
-  console.log(req.body);
   reply.send({ route: 'register' });
 };

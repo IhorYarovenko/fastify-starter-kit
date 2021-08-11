@@ -19,6 +19,7 @@
                 "SwitchCase": 1
             }
         ],
+        "import/prefer-default-export": "off",
         "import/extensions": "off",
         "no-underscore-dangle": 0,
         "no-plusplus": 0,
